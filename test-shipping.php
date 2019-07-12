@@ -32,20 +32,27 @@ if ( ! class_exists( 'Test_Shipping_Br' ) ) {
             add_action( 'woocommerce_update_options_shipping_' . $this->id, array( $this, 'process_admin_options' ) );
         }
 
-        public function calculate_shipping( $package ) {
+        public function calculate_shipping( $packages = array() ) {
 
-            $array = WC_Cart::get_shipping_packages();                  
+            $array = WC()->cart->needs_shipping();                  
             $postcode = $array[0]['destination']['postcode'];
-
+			$cost = 0;
+			if ($cost == 0){
+				$semfrete = "Insira seu cep para calcular o frete";
+			}
+			else {
+				$semfrete = $this->title;
+			}
             if ($postcode >= 75960000 && $postcode <= 75969999)
             {
                 $cost = 17;
+				
 
             }
 
             $rate = array(
                 'id' => $this->id,
-                'label' => $this->title,
+                'label' => $semfrete,
                 'cost' => round($cost,2),
                 'calc_tax' => 'per_order'
             );
